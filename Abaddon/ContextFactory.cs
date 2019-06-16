@@ -1,9 +1,7 @@
 ﻿using Abaddon.Data;
 using Abaddon.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Abaddon
 {
@@ -16,6 +14,7 @@ namespace Abaddon
             {
                 throw new StateInitializationError();
             }
+
             var rows = values.Select((c, index) => new { index, value = converter(c) })
                 .GroupBy(x => x.index / width, x => x.value)
                 .Select(g => new BoardRow<TEntry>(g.ToList()))

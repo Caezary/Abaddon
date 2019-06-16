@@ -1,7 +1,6 @@
 using Abaddon;
 using Abaddon.Exceptions;
 using Shouldly;
-using System;
 using Xunit;
 
 namespace AbaddonTests
@@ -19,14 +18,14 @@ namespace AbaddonTests
         public void CreateInitialStateCalled_EmptyValues_Throws()
         {
             var values = "";
-            Assert.Throws<StateInitializationError>(() => _sut.CreateInitialState<int>(2, 2, values, c => 0));
+            Assert.Throws<StateInitializationError>(() => _sut.CreateInitialState(2, 2, values, c => 0));
         }
 
         [Fact]
         public void CreateInitialStateCalled_ValuesGiven_CreatesExpectedInitialState()
         {
             var values = "A16B59";
-            var result = _sut.CreateInitialState<int>(3, 2, values, c => ConvertAsHex(c));
+            var result = _sut.CreateInitialState(3, 2, values, c => ConvertAsHex(c));
 
             result.Board.Width.ShouldBe(3);
             result.Board.Height.ShouldBe(2);
