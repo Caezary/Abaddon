@@ -49,15 +49,19 @@ namespace AbaddonTests
             VerifyInstructionCreationOfType<SwapInstruction<int>>("S");
         }
 
-        [Fact]
-        public void CreateInstructionCalled_JumpMnemonic_CreatesJumpInstruction()
+        [Theory]
+        [InlineData("J5")]
+        [InlineData("J123")]
+        [InlineData("J-5")]
+        public void CreateInstructionCalled_JumpMnemonic_CreatesJumpInstruction(string mnemonic)
         {
-            VerifyInstructionCreationOfType<JumpInstruction<int>>("J5");
+            VerifyInstructionCreationOfType<JumpInstruction<int>>(mnemonic);
         }
 
         [Theory]
         [InlineData("J")]
         [InlineData("JZZZ")]
+        [InlineData("J0xB")]
         public void CreateInstructionCalled_JumpMnemonicWithMalformedCounter_Throws(string mnemonic)
         {
             Assert.Throws<MalformedInstructionError>(() => _sut.CreateInstruction<int>(mnemonic));
