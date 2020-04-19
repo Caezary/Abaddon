@@ -8,7 +8,7 @@
         public TBoardEntry Accumulator { get; set; }
         public InstructionStack<TBoardEntry> ExecutedInstructions { get; } =
             new InstructionStack<TBoardEntry>(InstructionCountHardLimit);
-        public MemoryPosition Position { get; } = new MemoryPosition(0, 0);
+        public MemoryPosition Position { get; }
         public int InstructionExecutionCount { get; set; } = 0;
 
         public TBoardEntry MarkedEntry
@@ -17,6 +17,10 @@
             set => Board[Position.Row][Position.Column] = value;
         }
 
-        public CurrentState(Board<TBoardEntry> board) => Board = board;
+        public CurrentState(Board<TBoardEntry> board, MemoryPosition startPosition = null)
+        {
+            Board = board;
+            Position = startPosition ?? new MemoryPosition(0, 0);
+        }
     }
 }

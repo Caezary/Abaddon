@@ -1,4 +1,5 @@
 using Abaddon;
+using Abaddon.Data;
 using Abaddon.Exceptions;
 using Shouldly;
 using Xunit;
@@ -7,6 +8,7 @@ namespace AbaddonTests
 {
     public class ContextFactoryTests
     {
+        private const string ExampleValues = "A16B59";
         private readonly ContextFactory _sut;
 
         public ContextFactoryTests()
@@ -18,14 +20,15 @@ namespace AbaddonTests
         public void CreateInitialStateCalled_EmptyValues_Throws()
         {
             var values = "";
-            Assert.Throws<StateInitializationError>(() => _sut.CreateInitialState(2, 2, values, c => 0));
+            
+            Assert.Throws<StateInitializationError>(
+                () => _sut.CreateInitialState(2, 2, values, c => 0));
         }
 
         [Fact]
         public void CreateInitialStateCalled_ValuesGiven_CreatesExpectedInitialState()
         {
-            var values = "A16B59";
-            var result = _sut.CreateInitialState(3, 2, values, c => ConvertAsHex(c));
+            var result = _sut.CreateInitialState(3, 2, ExampleValues, Conversions.AsHex);
 
             result.Board.Width.ShouldBe(3);
             result.Board.Height.ShouldBe(2);
@@ -37,9 +40,29 @@ namespace AbaddonTests
             result.Board[1][2].ShouldBe(0x9);
         }
 
-        private static int ConvertAsHex(char c)
+        [Fact]
+        public void CreateInitialStateCalled_InitialPositionGiven_CreatesStateWithSetPosition()
         {
-            return int.Parse($"{c}", System.Globalization.NumberStyles.HexNumber);
+            var position = new MemoryPosition(1, 2);
+            
+            var result = _sut.CreateInitialState(
+                3, 2, ExampleValues, Conversions.AsHex, position);
+
+            result.Position.Row.ShouldBe(1);
+            result.Position.Column.ShouldBe(2);
+        }
+
+        [Theory]
+        [InlineData(2, 1)]
+        [InlineData(1, 3)]
+        [InlineData(4, 4)]
+        [InlineData(0, -1)]
+        public void CreateInitialStateCalled_FaultyInitialPositionGiven_Throws(int row, int column)
+        {
+            var position = new MemoryPosition(row, column);
+
+            Assert.Throws<StateInitializationError>(
+                () => _sut.CreateInitialState(3, 2, ExampleValues, Conversions.AsHex, position));
         }
     }
 }

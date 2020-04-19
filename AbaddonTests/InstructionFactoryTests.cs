@@ -18,7 +18,8 @@ namespace AbaddonTests
         [Fact]
         public void CreateInstructionCalled_UnknownMnemonic_Throws()
         {
-            Assert.Throws<UnknownInstructionError>(() => _sut.CreateInstruction<int>("ZZZ"));
+            Assert.Throws<UnknownInstructionError>(
+                () => _sut.CreateInstruction<int>("ZZZ"));
         }
 
         [Theory]

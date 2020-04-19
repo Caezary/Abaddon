@@ -1,4 +1,5 @@
 ﻿using Abaddon.Data;
+using Abaddon.Exceptions;
 
 namespace Abaddon.Instructions
 {
@@ -6,7 +7,12 @@ namespace Abaddon.Instructions
     {
         public void Execute(CurrentState<TBoardEntry> state)
         {
-            throw new System.NotImplementedException();
+            if (state.Board.Width <= state.Position.Column + 1)
+            {
+                throw new IllegalMovementException();
+            }
+            
+            state.Position.Column++;
         }
     }
 }

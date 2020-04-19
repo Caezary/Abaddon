@@ -8,11 +8,21 @@ namespace Abaddon
     public class ContextFactory
     {
         public CurrentState<TEntry> CreateInitialState<TEntry>(
-            int width, int height, string values, Func<char, TEntry> converter)
+            int width, int height, string values, Func<char, TEntry> converter, MemoryPosition startPosition = null)
         {
             if (width * height != values.Length)
             {
-                throw new StateInitializationError();
+                throw new StateInitializationError($"Values don't match given {nameof(width)} and {nameof(height)}");
+            }
+
+            if (startPosition?.Row < 0 || startPosition?.Row >= height)
+            {
+                throw new StateInitializationError("Faulty start position");
+            }
+
+            if (startPosition?.Column < 0 || startPosition?.Column >= width)
+            {
+                throw new StateInitializationError("Faulty start position");
             }
 
             var rows = values.Select((c, index) => new { index, value = converter(c) })
@@ -22,7 +32,7 @@ namespace Abaddon
 
             var board = new Board<TEntry>(rows);
 
-            return new CurrentState<TEntry>(board);
+            return new CurrentState<TEntry>(board, startPosition);
         }
     }
 }
