@@ -23,7 +23,6 @@ namespace AbaddonTests
         }
 
         [Theory]
-        [InlineData("U")]
         [InlineData("D")]
         [InlineData("L")]
         public void CreateInstructionCalled_MoveMnemonic_CreatesMoveInstruction(string mnemonic)
@@ -35,6 +34,12 @@ namespace AbaddonTests
         public void CreateInstructionCalled_MoveRightMnemonic_CreatesMoveRightInstruction()
         {
             VerifyInstructionCreationOfType<MoveRightInstruction<int>>("R");
+        }
+        
+        [Fact]
+        public void CreateInstructionCalled_MoveUpMnemonic_CreatesMoveUpInstruction()
+        {
+            VerifyInstructionCreationOfType<MoveUpInstruction<int>>("U");
         }
 
         [Fact]

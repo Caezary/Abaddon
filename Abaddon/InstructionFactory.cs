@@ -11,6 +11,7 @@ namespace Abaddon
             switch (mnemonic)
             {
                 case "U":
+                    return new MoveUpInstruction<TEntity>();
                 case "D":
                 case "L":
                     return new MoveLeftInstruction<TEntity>();

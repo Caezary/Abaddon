@@ -66,6 +66,31 @@ namespace AbaddonTests.Instructions
             context.Position.Column.ShouldBe(0);
         }
 
+        [Fact]
+        public void ExecuteMoveUpInstruction_CanMoveUp_ExecutesProperly()
+        {
+            var context = CreateContext(new MemoryPosition(1, 2));
+            var sut = _factory.CreateInstruction<int>("U");
+
+            sut.Execute(context);
+            
+            context.Position.Column.ShouldBe(2);
+            context.Position.Row.ShouldBe(0);
+            context.MarkedEntry.ShouldBe(0xC);
+        }
+
+        [Fact]
+        public void ExecuteMoveUpInstruction_CanNotMoveUp_Throws()
+        {
+            var context = CreateContext();
+            var sut = _factory.CreateInstruction<int>("U");
+
+            Assert.Throws<IllegalMovementException>(() =>
+                sut.Execute(context));
+            
+            context.Position.Row.ShouldBe(0);
+        }
+
         private static CurrentState<int> CreateContext(MemoryPosition startPosition = null)
         {
             return new ContextFactory().CreateInitialState(
