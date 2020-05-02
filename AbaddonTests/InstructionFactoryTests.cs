@@ -29,7 +29,7 @@ namespace AbaddonTests
         [InlineData("R")]
         public void CreateInstructionCalled_MoveMnemonic_CreatesMoveInstruction(string mnemonic)
         {
-            VerifyInstructionCreationOfType<MoveInstruction<int>>(mnemonic);
+            VerifyInstructionCreationOfType<MoveRightInstruction<int>>(mnemonic);
         }
 
         [Fact]

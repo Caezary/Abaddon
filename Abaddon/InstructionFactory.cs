@@ -14,7 +14,7 @@ namespace Abaddon
                 case "D":
                 case "L":
                 case "R":
-                    return new MoveInstruction<TEntity>();
+                    return new MoveRightInstruction<TEntity>();
                 case "A":
                     return new CopyToAccumulatorInstruction<TEntity>();
                 case "Q":
