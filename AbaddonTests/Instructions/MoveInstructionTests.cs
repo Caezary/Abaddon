@@ -91,6 +91,18 @@ namespace AbaddonTests.Instructions
             context.Position.Row.ShouldBe(0);
         }
 
+        [Fact]
+        public void ExecuteMoveDownInstruction_CanNotMoveDown_Throws()
+        {
+            var context = CreateContext(new MemoryPosition(2, 2));
+            var sut = _factory.CreateInstruction<int>("D");
+
+            Assert.Throws<IllegalMovementException>(() =>
+                sut.Execute(context));
+            
+            context.Position.Row.ShouldBe(2);
+        }
+
         private static CurrentState<int> CreateContext(MemoryPosition startPosition = null)
         {
             return new ContextFactory().CreateInitialState(
