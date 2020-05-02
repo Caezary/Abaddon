@@ -13,6 +13,7 @@ namespace Abaddon
                 case "U":
                 case "D":
                 case "L":
+                    return new MoveLeftInstruction<TEntity>();
                 case "R":
                     return new MoveRightInstruction<TEntity>();
                 case "A":
