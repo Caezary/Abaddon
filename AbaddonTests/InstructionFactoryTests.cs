@@ -23,6 +23,13 @@ namespace AbaddonTests
         }
 
         [Fact]
+        public void CreateInstructionCalled_NullInsteadOfMnemonic_Throws()
+        {
+            Assert.Throws<UnknownInstructionError>(
+                () => _sut.CreateInstruction<int>(null));
+        }
+
+        [Fact]
         public void CreateInstructionCalled_MoveLeftMnemonic_CreatesMoveLeftInstruction()
         {
             VerifyInstructionCreationOfType<MoveLeftInstruction<int>>("L");

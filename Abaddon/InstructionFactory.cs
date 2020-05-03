@@ -6,35 +6,22 @@ namespace Abaddon
 {
     public class InstructionFactory
     {
-        public IInstruction<TEntity> CreateInstruction<TEntity>(string mnemonic)
-        {
-            switch (mnemonic)
+        public IInstruction<TEntity> CreateInstruction<TEntity>(string mnemonic) =>
+            mnemonic switch
             {
-                case "U":
-                    return new MoveUpInstruction<TEntity>();
-                case "D":
-                    return new MoveDownInstruction<TEntity>();
-                case "L":
-                    return new MoveLeftInstruction<TEntity>();
-                case "R":
-                    return new MoveRightInstruction<TEntity>();
-                case "A":
-                    return new CopyToAccumulatorInstruction<TEntity>();
-                case "Q":
-                    return new CopyFromAccumulatorInstruction<TEntity>();
-                case "S":
-                    return new SwapInstruction<TEntity>();
-            }
+                "U" => new MoveUpInstruction<TEntity>(),
+                "D" => new MoveDownInstruction<TEntity>(),
+                "L" => new MoveLeftInstruction<TEntity>(),
+                "R" => new MoveRightInstruction<TEntity>(),
+                "A" => new CopyToAccumulatorInstruction<TEntity>(),
+                "Q" => new CopyFromAccumulatorInstruction<TEntity>(),
+                "S" => new SwapInstruction<TEntity>(),
+                var jump when jump != null && jump.StartsWith("J") =>
+                    CreateJumpInstruction<TEntity>(jump.Substring(1)),
+                _ => throw new UnknownInstructionError()
+            };
 
-            if (mnemonic.StartsWith("J"))
-            {
-                return CreateJumpInstruction<TEntity>(mnemonic.Substring(1));
-            }
-
-            throw new UnknownInstructionError();
-        }
-
-        private IInstruction<TEntity> CreateJumpInstruction<TEntity>(string value)
+        private static IInstruction<TEntity> CreateJumpInstruction<TEntity>(string value)
         {
             if (!int.TryParse(value, out var instructionCount))
             {
