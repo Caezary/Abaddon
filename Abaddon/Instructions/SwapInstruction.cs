@@ -6,7 +6,9 @@ namespace Abaddon.Instructions
     {
         public void Execute(CurrentState<TBoardEntry> state)
         {
-            throw new System.NotImplementedException();
+            var current = state.MarkedEntry;
+            state.MarkedEntry = state.Accumulator;
+            state.Accumulator = current;
         }
     }
 }
