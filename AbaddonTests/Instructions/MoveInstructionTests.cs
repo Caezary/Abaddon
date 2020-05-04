@@ -9,12 +9,7 @@ namespace AbaddonTests.Instructions
     public class MoveInstructionTests
     {
         private const string ExampleInitialStateValues = "3FC21A54B";
-        private readonly InstructionFactory _factory;
-
-        public MoveInstructionTests()
-        {
-            _factory = new InstructionFactory();
-        }
+        private readonly InstructionFactory _factory = new InstructionFactory();
 
         [Theory]
         [InlineData(0, 0xF)]

@@ -8,12 +8,7 @@ namespace AbaddonTests
 {
     public class InstructionFactoryTests
     {
-        private readonly InstructionFactory _sut;
-
-        public InstructionFactoryTests()
-        {
-            _sut = new InstructionFactory();
-        }
+        private readonly InstructionFactory _sut = new InstructionFactory();
 
         [Fact]
         public void CreateInstructionCalled_UnknownMnemonic_Throws()

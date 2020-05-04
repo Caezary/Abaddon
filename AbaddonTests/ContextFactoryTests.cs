@@ -9,12 +9,7 @@ namespace AbaddonTests
     public class ContextFactoryTests
     {
         private const string ExampleValues = "A16B59";
-        private readonly ContextFactory _sut;
-
-        public ContextFactoryTests()
-        {
-            _sut = new ContextFactory();
-        }
+        private readonly ContextFactory _sut = new ContextFactory();
 
         [Fact]
         public void CreateInitialStateCalled_EmptyValues_Throws()
