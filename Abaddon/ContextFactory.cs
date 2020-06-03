@@ -8,7 +8,11 @@ namespace Abaddon
     public class ContextFactory
     {
         public CurrentState<TEntry> CreateInitialState<TEntry>(
-            int width, int height, string values, Func<char, TEntry> converter, MemoryPosition startPosition = null)
+            int width, int height,
+            string values,
+            Func<char, TEntry> converter,
+            MemoryPosition startPosition = null,
+            InstructionExecutionCounter executionCounter = null)
         {
             if (width * height != values.Length)
             {
@@ -32,7 +36,7 @@ namespace Abaddon
 
             var board = new Board<TEntry>(rows);
 
-            return new CurrentState<TEntry>(board, startPosition);
+            return new CurrentState<TEntry>(board, startPosition, executionCounter);
         }
     }
 }
