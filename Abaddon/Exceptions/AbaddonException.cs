@@ -40,4 +40,6 @@ namespace Abaddon.Exceptions
     public class IllegalExecutionException : InstructionExecutionException { }
     
     public class ExecutionLimitReachedException : InstructionExecutionException { }
+    
+    public class InvalidJumpException : InstructionExecutionException { }
 }

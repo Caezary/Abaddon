@@ -1,4 +1,5 @@
 ﻿using Abaddon.Data;
+using Abaddon.Exceptions;
 
 namespace Abaddon.Instructions
 {
@@ -13,7 +14,14 @@ namespace Abaddon.Instructions
 
         public void Execute(CurrentState<TBoardEntry> state)
         {
-            throw new System.NotImplementedException();
+            if (state.ExecutionStackPointer.Value < _instructionCount || _instructionCount == 0)
+            {
+                throw new InvalidJumpException();
+            }
+            
+            state.ExecutionStackPointer.Direction = StackChangeDirection.Decreasing;
+            state.ExecutionStackPointer.Step = _instructionCount;
+            // state.Accumulator--; // TODO: decrease
         }
     }
 }
