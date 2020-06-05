@@ -47,7 +47,7 @@ namespace AbaddonTests.Execution
             
             instructionMocks[0].Verify(x => x.Execute(context), Times.Once);
             context.ExecutionCounter.Current.ShouldBe(1);
-            context.ExecutionStackPointer.ShouldBe(1);
+            context.ExecutionStackPointer.Value.ShouldBe(1);
         }
 
         [Fact]
@@ -61,7 +61,43 @@ namespace AbaddonTests.Execution
             
             instructionMocks[3].Verify(x => x.Execute(context), Times.Once);
             context.ExecutionCounter.Current.ShouldBe(4);
-            context.ExecutionStackPointer.ShouldBe(4);
+            context.ExecutionStackPointer.Value.ShouldBe(4);
+        }
+
+        [Fact]
+        public void ExecuteStep_ExecutionStackPointerSetToDecreasingDirection_IncreasesExecutionCounterAndDecreasesExecutionStackPointer()
+        {
+            var context = CreateContext(new InstructionExecutionCounter(5, 10), 5);
+            context.ExecutionStackPointer.Direction = StackChangeDirection.Decreasing;
+            context.ExecutionStackPointer.Step = 2;
+            var instructionMocks = CreateInstructionMocks(10);
+            var sut = CreateSut(instructionMocks);
+
+            sut.ExecuteStep(context);
+            
+            instructionMocks[5].Verify(x => x.Execute(context), Times.Once);
+            context.ExecutionCounter.Current.ShouldBe(6);
+            context.ExecutionStackPointer.Value.ShouldBe(3);
+            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
+            context.ExecutionStackPointer.Step.ShouldBe(1);
+        }
+
+        [Fact]
+        public void ExecuteStep_ExecutionStackPointerSetToIncreasingDirectionAndStepBiggerThanOne_IncreasesExecutionCounterAndIncreasesExecutionStackPointerAccordingly()
+        {
+            var context = CreateContext(new InstructionExecutionCounter(5, 10), 5);
+            context.ExecutionStackPointer.Direction = StackChangeDirection.Increasing;
+            context.ExecutionStackPointer.Step = 2;
+            var instructionMocks = CreateInstructionMocks(10);
+            var sut = CreateSut(instructionMocks);
+
+            sut.ExecuteStep(context);
+            
+            instructionMocks[5].Verify(x => x.Execute(context), Times.Once);
+            context.ExecutionCounter.Current.ShouldBe(6);
+            context.ExecutionStackPointer.Value.ShouldBe(7);
+            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
+            context.ExecutionStackPointer.Step.ShouldBe(1);
         }
 
         [Fact]
@@ -76,7 +112,7 @@ namespace AbaddonTests.Execution
 
             instructionMocks.ForEach(m => m.Verify(x => x.Execute(context), Times.Never));
             context.ExecutionCounter.Current.ShouldBe(3);
-            context.ExecutionStackPointer.ShouldBe(3);
+            context.ExecutionStackPointer.Value.ShouldBe(3);
         }
 
         [Fact]
@@ -91,7 +127,7 @@ namespace AbaddonTests.Execution
 
             instructionMocks.ForEach(m => m.Verify(x => x.Execute(context), Times.Never));
             context.ExecutionCounter.Current.ShouldBe(3);
-            context.ExecutionStackPointer.ShouldBe(3);
+            context.ExecutionStackPointer.Value.ShouldBe(3);
         }
 
         [Fact]
@@ -149,7 +185,7 @@ namespace AbaddonTests.Execution
             var contextFactory = new ContextFactory();
             var initialState = contextFactory.CreateInitialState(
                 1, 1, ExampleInitialStateValues, Conversions.AsHex, executionCounter: executionCounter);
-            initialState.ExecutionStackPointer = currentExecutionPointer;
+            initialState.ExecutionStackPointer.Value = currentExecutionPointer;
             return initialState;
         }
     }
