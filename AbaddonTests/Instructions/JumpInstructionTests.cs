@@ -84,6 +84,34 @@ namespace AbaddonTests.Instructions
             context.Accumulator.ShouldBe(0);
         }
 
+        [Fact]
+        public void ExecuteForwardJump_PointsThreeInstructionsForwardAndAccumulatorIsNonzero_MarksStackPointerToBeIncreasedAndAccumulatorIsNotChanged()
+        {
+            var context = CreateContext(4, 7);
+            var sut = _factory.CreateInstruction("J-3");
+
+            sut.Execute(context);
+            
+            context.ExecutionStackPointer.Value.ShouldBe(7);
+            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
+            context.ExecutionStackPointer.Step.ShouldBe(3);
+            context.Accumulator.ShouldBe(4);
+        }
+
+        [Fact]
+        public void ExecuteForwardJump_PointsThreeInstructionsForwardAndAccumulatorIsZero_StackPointerIsDefaultAndAccumulatorIsNotChanged()
+        {
+            var context = CreateContext(0, 7);
+            var sut = _factory.CreateInstruction("J-3");
+
+            sut.Execute(context);
+            
+            context.ExecutionStackPointer.Value.ShouldBe(7);
+            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
+            context.ExecutionStackPointer.Step.ShouldBe(1);
+            context.Accumulator.ShouldBe(0);
+        }
+
         private static CurrentState<int> CreateContext(int accumulatorValue, int stackPointerValue)
         {
             var context = new ContextFactory().CreateInitialState(

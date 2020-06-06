@@ -27,6 +27,13 @@ namespace Abaddon.Instructions
             {
                 return;
             }
+
+            if (_instructionCount < 0)
+            {
+                state.ExecutionStackPointer.Direction = StackChangeDirection.Increasing;
+                state.ExecutionStackPointer.Step = -_instructionCount;
+                return;
+            }
             
             state.ExecutionStackPointer.Direction = StackChangeDirection.Decreasing;
             state.ExecutionStackPointer.Step = _instructionCount;
