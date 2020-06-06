@@ -1,6 +1,8 @@
 ﻿using Abaddon;
 using Abaddon.Exceptions;
+using Abaddon.Execution;
 using Abaddon.Instructions;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -8,20 +10,21 @@ namespace AbaddonTests
 {
     public class InstructionFactoryTests
     {
-        private readonly InstructionFactory _sut = new InstructionFactory();
+        private readonly InstructionFactory<int> _sut = new InstructionFactory<int>(
+            new Mock<IPerformEntryOperations<int>>().Object);
 
         [Fact]
         public void CreateInstructionCalled_UnknownMnemonic_Throws()
         {
             Assert.Throws<UnknownInstructionError>(
-                () => _sut.CreateInstruction<int>("ZZZ"));
+                () => _sut.CreateInstruction("ZZZ"));
         }
 
         [Fact]
         public void CreateInstructionCalled_NullInsteadOfMnemonic_Throws()
         {
             Assert.Throws<UnknownInstructionError>(
-                () => _sut.CreateInstruction<int>(null));
+                () => _sut.CreateInstruction(null));
         }
 
         [Fact]
@@ -81,12 +84,12 @@ namespace AbaddonTests
         [InlineData("J0xB")]
         public void CreateInstructionCalled_JumpMnemonicWithMalformedCounter_Throws(string mnemonic)
         {
-            Assert.Throws<MalformedInstructionError>(() => _sut.CreateInstruction<int>(mnemonic));
+            Assert.Throws<MalformedInstructionError>(() => _sut.CreateInstruction(mnemonic));
         }
 
         private void VerifyInstructionCreationOfType<TInstructionType>(string mnemonic)
         {
-            var result = _sut.CreateInstruction<int>(mnemonic);
+            var result = _sut.CreateInstruction(mnemonic);
             result.ShouldBeOfType<TInstructionType>();
         }
     }

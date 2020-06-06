@@ -1,6 +1,8 @@
 ﻿using Abaddon;
 using Abaddon.Data;
 using Abaddon.Exceptions;
+using Abaddon.Execution;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -9,7 +11,8 @@ namespace AbaddonTests.Instructions
     public class MoveInstructionTests
     {
         private const string ExampleInitialStateValues = "3FC21A54B";
-        private readonly InstructionFactory _factory = new InstructionFactory();
+        private readonly InstructionFactory<int> _factory = new InstructionFactory<int>(
+            new Mock<IPerformEntryOperations<int>>().Object);
 
         [Theory]
         [InlineData(0, 0xF)]
@@ -18,7 +21,7 @@ namespace AbaddonTests.Instructions
         public void ExecuteMoveRightInstruction_CanMoveRight_ExecutesProperly(int row, int expectedValue)
         {
             var context = CreateContext(new MemoryPosition(row, 0));
-            var sut = _factory.CreateInstruction<int>("R");
+            var sut = _factory.CreateInstruction("R");
 
             sut.Execute(context);
 
@@ -34,7 +37,7 @@ namespace AbaddonTests.Instructions
         public void ExecuteMoveRightInstruction_CanNotMoveRight_Throws(int row)
         {
             var context = CreateContext(new MemoryPosition(row, 2));
-            var sut = _factory.CreateInstruction<int>("R");
+            var sut = _factory.CreateInstruction("R");
 
             Assert.Throws<IllegalMovementException>(() =>
                 sut.Execute(context));
@@ -50,7 +53,7 @@ namespace AbaddonTests.Instructions
         public void ExecuteMoveLeftInstruction_CanMoveLeft_ExecutesProperly(int row, int expectedValue)
         {
             var context = CreateContext(new MemoryPosition(row, 2));
-            var sut = _factory.CreateInstruction<int>("L");
+            var sut = _factory.CreateInstruction("L");
 
             sut.Execute(context);
 
@@ -66,7 +69,7 @@ namespace AbaddonTests.Instructions
         public void ExecuteMoveLeftInstruction_CanNotMoveLeft_Throws(int row)
         {
             var context = CreateContext(new MemoryPosition(row, 0));
-            var sut = _factory.CreateInstruction<int>("L");
+            var sut = _factory.CreateInstruction("L");
 
             Assert.Throws<IllegalMovementException>(() =>
                 sut.Execute(context));
@@ -82,7 +85,7 @@ namespace AbaddonTests.Instructions
         public void ExecuteMoveUpInstruction_CanMoveUp_ExecutesProperly(int column, int expectedValue)
         {
             var context = CreateContext(new MemoryPosition(1, column));
-            var sut = _factory.CreateInstruction<int>("U");
+            var sut = _factory.CreateInstruction("U");
 
             sut.Execute(context);
             
@@ -98,7 +101,7 @@ namespace AbaddonTests.Instructions
         public void ExecuteMoveUpInstruction_CanNotMoveUp_Throws(int column)
         {
             var context = CreateContext(new MemoryPosition(0, column));
-            var sut = _factory.CreateInstruction<int>("U");
+            var sut = _factory.CreateInstruction("U");
 
             Assert.Throws<IllegalMovementException>(() =>
                 sut.Execute(context));
@@ -114,7 +117,7 @@ namespace AbaddonTests.Instructions
         public void ExecuteMoveDownInstruction_CanMoveDown_ExecutesProperly(int column, int expectedValue)
         {
             var context = CreateContext(new MemoryPosition(1, column));
-            var sut = _factory.CreateInstruction<int>("D");
+            var sut = _factory.CreateInstruction("D");
 
             sut.Execute(context);
             
@@ -130,7 +133,7 @@ namespace AbaddonTests.Instructions
         public void ExecuteMoveDownInstruction_CanNotMoveDown_Throws(int column)
         {
             var context = CreateContext(new MemoryPosition(2, column));
-            var sut = _factory.CreateInstruction<int>("D");
+            var sut = _factory.CreateInstruction("D");
 
             Assert.Throws<IllegalMovementException>(() =>
                 sut.Execute(context));

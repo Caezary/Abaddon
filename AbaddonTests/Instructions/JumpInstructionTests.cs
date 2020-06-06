@@ -1,6 +1,8 @@
 ﻿using Abaddon;
 using Abaddon.Data;
 using Abaddon.Exceptions;
+using Abaddon.Execution;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -9,14 +11,26 @@ namespace AbaddonTests.Instructions
     public class JumpInstructionTests
     {
         private const string ExampleInitialStateValues = "E";
-        private readonly InstructionFactory _factory = new InstructionFactory();
+        private readonly Mock<IPerformEntryOperations<int>> _entryOperatorMock =
+            new Mock<IPerformEntryOperations<int>>();
+        private readonly InstructionFactory<int> _factory;
+
+        public JumpInstructionTests()
+        {
+            _entryOperatorMock
+                .Setup(o => o.Decrease(It.IsAny<int>()))
+                .Returns<int>(e => e - 1);
+            _entryOperatorMock
+                .Setup(o => o.IsZero(It.IsAny<int>()))
+                .Returns<int>(e => e == 0);
+            _factory = new InstructionFactory<int>(_entryOperatorMock.Object);
+        }
 
         [Fact]
         public void ExecuteBackwardJump_ExecutionStackPointerPointsAtStart_Throws()
         {
-            var context = CreateContext();
-            context.Accumulator = 5;
-            var sut = _factory.CreateInstruction<int>("J5");
+            var context = CreateContext(5, 0);
+            var sut = _factory.CreateInstruction("J5");
 
             Assert.Throws<InvalidJumpException>(
                 () => sut.Execute(context));
@@ -30,10 +44,8 @@ namespace AbaddonTests.Instructions
         [Fact]
         public void ExecuteBackwardJump_PointsToSelf_Throws()
         {
-            var context = CreateContext();
-            context.ExecutionStackPointer.Value = 2;
-            context.Accumulator = 5;
-            var sut = _factory.CreateInstruction<int>("J0");
+            var context = CreateContext(5, 2);
+            var sut = _factory.CreateInstruction("J0");
 
             Assert.Throws<InvalidJumpException>(
                 () => sut.Execute(context));
@@ -47,23 +59,38 @@ namespace AbaddonTests.Instructions
         [Fact]
         public void ExecuteBackwardJump_PointsThreeInstructionsBackAndAccumulatorIsNonzero_MarksStackPointerToBeDecreasedAndAccumulatorIsDecreased()
         {
-            var context = CreateContext();
-            context.ExecutionStackPointer.Value = 7;
-            context.Accumulator = 5;
-            var sut = _factory.CreateInstruction<int>("J3");
+            var context = CreateContext(5, 7);
+            var sut = _factory.CreateInstruction("J3");
 
             sut.Execute(context);
             
             context.ExecutionStackPointer.Value.ShouldBe(7);
             context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Decreasing);
             context.ExecutionStackPointer.Step.ShouldBe(3);
-            // context.Accumulator.ShouldBe(4); // TODO: decrease acc, use IPerformEntryOperations - add to InstructionFactory ctor param
+            context.Accumulator.ShouldBe(4);
         }
 
-        private static CurrentState<int> CreateContext()
+        [Fact]
+        public void ExecuteBackwardJump_PointsThreeInstructionsBackAndAccumulatorIsZero_StackPointerIsDefaultAndAccumulatorIsNotChanged()
         {
-            return new ContextFactory().CreateInitialState(
+            var context = CreateContext(0, 7);
+            var sut = _factory.CreateInstruction("J3");
+
+            sut.Execute(context);
+            
+            context.ExecutionStackPointer.Value.ShouldBe(7);
+            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
+            context.ExecutionStackPointer.Step.ShouldBe(1);
+            context.Accumulator.ShouldBe(0);
+        }
+
+        private static CurrentState<int> CreateContext(int accumulatorValue, int stackPointerValue)
+        {
+            var context = new ContextFactory().CreateInitialState(
                 1, 1, ExampleInitialStateValues, Conversions.AsHex);
+            context.Accumulator = accumulatorValue;
+            context.ExecutionStackPointer.Value = stackPointerValue;
+            return context;
         }
     }
 }

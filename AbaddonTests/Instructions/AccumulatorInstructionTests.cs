@@ -1,5 +1,7 @@
 ﻿using Abaddon;
 using Abaddon.Data;
+using Abaddon.Execution;
+using Moq;
 using Shouldly;
 using Xunit;
 
@@ -8,13 +10,14 @@ namespace AbaddonTests.Instructions
     public class AccumulatorInstructionTests
     {
         private const string ExampleInitialStateValues = "0123456789ABCDEF";
-        private readonly InstructionFactory _factory = new InstructionFactory();
+        private readonly InstructionFactory<int> _factory = new InstructionFactory<int>(
+            new Mock<IPerformEntryOperations<int>>().Object);
 
         [Fact]
         public void CopyToAccumulatorInstruction_TakesValueUnderCurrentPosition_CopiesValueToAccumulator()
         {
             var context = CreateContext(new MemoryPosition(3, 2));
-            var sut = _factory.CreateInstruction<int>("A");
+            var sut = _factory.CreateInstruction("A");
 
             sut.Execute(context);
             
@@ -27,7 +30,7 @@ namespace AbaddonTests.Instructions
         {
             var context = CreateContext(new MemoryPosition(1, 1));
             context.Accumulator = 0xF;
-            var sut = _factory.CreateInstruction<int>("Q");
+            var sut = _factory.CreateInstruction("Q");
 
             sut.Execute(context);
             
@@ -40,7 +43,7 @@ namespace AbaddonTests.Instructions
         {
             var context = CreateContext(new MemoryPosition(0, 2));
             context.Accumulator = 0xD;
-            var sut = _factory.CreateInstruction<int>("S");
+            var sut = _factory.CreateInstruction("S");
 
             sut.Execute(context);
             
