@@ -32,7 +32,7 @@ namespace AbaddonTests.Instructions
             var context = CreateContext(5, 0);
             var sut = _factory.CreateInstruction("J5");
 
-            Assert.Throws<InvalidJumpException>(
+            Assert.Throws<InvalidJumpError>(
                 () => sut.Execute(context));
             
             context.ExecutionStackPointer.Value.ShouldBe(0);
@@ -46,7 +46,7 @@ namespace AbaddonTests.Instructions
             var context = CreateContext(5, 2);
             var sut = _factory.CreateInstruction("J0");
 
-            Assert.Throws<InvalidJumpException>(
+            Assert.Throws<InvalidJumpError>(
                 () => sut.Execute(context));
             
             context.ExecutionStackPointer.Value.ShouldBe(2);

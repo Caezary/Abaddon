@@ -39,7 +39,7 @@ namespace AbaddonTests.Instructions
             var context = CreateContext(new MemoryPosition(row, 2));
             var sut = _factory.CreateInstruction("R");
 
-            Assert.Throws<IllegalMovementException>(() =>
+            Assert.Throws<IllegalMovementError>(() =>
                 sut.Execute(context));
             
             context.Position.Row.ShouldBe(row);
@@ -71,7 +71,7 @@ namespace AbaddonTests.Instructions
             var context = CreateContext(new MemoryPosition(row, 0));
             var sut = _factory.CreateInstruction("L");
 
-            Assert.Throws<IllegalMovementException>(() =>
+            Assert.Throws<IllegalMovementError>(() =>
                 sut.Execute(context));
             
             context.Position.Row.ShouldBe(row);
@@ -103,7 +103,7 @@ namespace AbaddonTests.Instructions
             var context = CreateContext(new MemoryPosition(0, column));
             var sut = _factory.CreateInstruction("U");
 
-            Assert.Throws<IllegalMovementException>(() =>
+            Assert.Throws<IllegalMovementError>(() =>
                 sut.Execute(context));
             
             context.Position.Row.ShouldBe(0);
@@ -135,7 +135,7 @@ namespace AbaddonTests.Instructions
             var context = CreateContext(new MemoryPosition(2, column));
             var sut = _factory.CreateInstruction("D");
 
-            Assert.Throws<IllegalMovementException>(() =>
+            Assert.Throws<IllegalMovementError>(() =>
                 sut.Execute(context));
             
             context.Position.Row.ShouldBe(2);

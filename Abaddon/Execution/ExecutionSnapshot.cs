@@ -20,12 +20,12 @@ namespace Abaddon.Execution
         {
             if (context.ExecutionCounter.LimitReached)
             {
-                throw new ExecutionLimitReachedException();
+                throw new ExecutionLimitReachedError();
             }
 
-            if(context.ExecutionStackPointer.Value >= _instructions.Count)
+            if (ExecutionPointerOutOfBounds(context))
             {
-                throw new IllegalExecutionException();
+                throw new IllegalExecutionError();
             }
             
             _instructions[context.ExecutionStackPointer.Value].Execute(context);
@@ -39,6 +39,11 @@ namespace Abaddon.Execution
         {
             return context.ExecutionStackPointer.Value == _instructions.Count
                    || context.ExecutionCounter.LimitReached;
+        }
+
+        private bool ExecutionPointerOutOfBounds(CurrentState<TBoardEntry> context)
+        {
+            return context.ExecutionStackPointer.Value >= _instructions.Count;
         }
 
         private static void UpdatePointer(ExecutionStackPointer executionStackPointer)

@@ -35,11 +35,11 @@ namespace Abaddon.Exceptions
         }
     }
     
-    public class IllegalMovementException : InstructionExecutionException { }
+    public class IllegalMovementError : InstructionExecutionException { }
     
-    public class IllegalExecutionException : InstructionExecutionException { }
+    public class IllegalExecutionError : InstructionExecutionException { }
     
-    public class ExecutionLimitReachedException : InstructionExecutionException { }
+    public class ExecutionLimitReachedError : InstructionExecutionException { }
     
-    public class InvalidJumpException : InstructionExecutionException { }
+    public class InvalidJumpError : InstructionExecutionException { }
 }

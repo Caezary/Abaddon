@@ -9,7 +9,7 @@ namespace Abaddon.Instructions
         {
             if (MovementBoundaryReached(state))
             {
-                throw new IllegalMovementException();
+                throw new IllegalMovementError();
             }
 
             ChangePosition(state);

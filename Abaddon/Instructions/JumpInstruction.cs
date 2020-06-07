@@ -20,7 +20,7 @@ namespace Abaddon.Instructions
         {
             if (state.ExecutionStackPointer.Value < _instructionCount || _instructionCount == 0)
             {
-                throw new InvalidJumpException();
+                throw new InvalidJumpError();
             }
 
             if (_entryOperator.IsZero(state.Accumulator))
