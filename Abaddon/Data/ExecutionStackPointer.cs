@@ -2,8 +2,11 @@
 {
     public class ExecutionStackPointer
     {
+        private const int DefaultStep = 1;
+        
         public int Value { get; set; } = 0;
-        public StackChangeDirection Direction { get; set; } = StackChangeDirection.Increasing;
-        public int Step { get; set; } = 1;
+        public int Step { get; set; } = DefaultStep;
+
+        public void ResetStep() => Step = 1;
     }
 }

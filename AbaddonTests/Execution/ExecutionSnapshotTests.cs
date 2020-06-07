@@ -68,8 +68,7 @@ namespace AbaddonTests.Execution
         public void ExecuteStep_ExecutionStackPointerSetToDecreasingDirection_IncreasesExecutionCounterAndDecreasesExecutionStackPointer()
         {
             var context = CreateContext(new InstructionExecutionCounter(5, 10), 5);
-            context.ExecutionStackPointer.Direction = StackChangeDirection.Decreasing;
-            context.ExecutionStackPointer.Step = 2;
+            context.ExecutionStackPointer.Step = -2;
             var instructionMocks = CreateInstructionMocks(10);
             var sut = CreateSut(instructionMocks);
 
@@ -78,7 +77,6 @@ namespace AbaddonTests.Execution
             instructionMocks[5].Verify(x => x.Execute(context), Times.Once);
             context.ExecutionCounter.Current.ShouldBe(6);
             context.ExecutionStackPointer.Value.ShouldBe(3);
-            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
             context.ExecutionStackPointer.Step.ShouldBe(1);
         }
 
@@ -86,7 +84,6 @@ namespace AbaddonTests.Execution
         public void ExecuteStep_ExecutionStackPointerSetToIncreasingDirectionAndStepBiggerThanOne_IncreasesExecutionCounterAndIncreasesExecutionStackPointerAccordingly()
         {
             var context = CreateContext(new InstructionExecutionCounter(5, 10), 5);
-            context.ExecutionStackPointer.Direction = StackChangeDirection.Increasing;
             context.ExecutionStackPointer.Step = 2;
             var instructionMocks = CreateInstructionMocks(10);
             var sut = CreateSut(instructionMocks);
@@ -96,7 +93,6 @@ namespace AbaddonTests.Execution
             instructionMocks[5].Verify(x => x.Execute(context), Times.Once);
             context.ExecutionCounter.Current.ShouldBe(6);
             context.ExecutionStackPointer.Value.ShouldBe(7);
-            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
             context.ExecutionStackPointer.Step.ShouldBe(1);
         }
 

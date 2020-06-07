@@ -36,7 +36,6 @@ namespace AbaddonTests.Instructions
                 () => sut.Execute(context));
             
             context.ExecutionStackPointer.Value.ShouldBe(0);
-            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
             context.ExecutionStackPointer.Step.ShouldBe(1);
             context.Accumulator.ShouldBe(5);
         }
@@ -51,7 +50,6 @@ namespace AbaddonTests.Instructions
                 () => sut.Execute(context));
             
             context.ExecutionStackPointer.Value.ShouldBe(2);
-            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
             context.ExecutionStackPointer.Step.ShouldBe(1);
             context.Accumulator.ShouldBe(5);
         }
@@ -65,8 +63,7 @@ namespace AbaddonTests.Instructions
             sut.Execute(context);
             
             context.ExecutionStackPointer.Value.ShouldBe(7);
-            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Decreasing);
-            context.ExecutionStackPointer.Step.ShouldBe(3);
+            context.ExecutionStackPointer.Step.ShouldBe(-3);
             context.Accumulator.ShouldBe(4);
         }
 
@@ -79,7 +76,6 @@ namespace AbaddonTests.Instructions
             sut.Execute(context);
             
             context.ExecutionStackPointer.Value.ShouldBe(7);
-            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
             context.ExecutionStackPointer.Step.ShouldBe(1);
             context.Accumulator.ShouldBe(0);
         }
@@ -93,7 +89,6 @@ namespace AbaddonTests.Instructions
             sut.Execute(context);
             
             context.ExecutionStackPointer.Value.ShouldBe(7);
-            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
             context.ExecutionStackPointer.Step.ShouldBe(3);
             context.Accumulator.ShouldBe(4);
         }
@@ -107,7 +102,6 @@ namespace AbaddonTests.Instructions
             sut.Execute(context);
             
             context.ExecutionStackPointer.Value.ShouldBe(7);
-            context.ExecutionStackPointer.Direction.ShouldBe(StackChangeDirection.Increasing);
             context.ExecutionStackPointer.Step.ShouldBe(1);
             context.Accumulator.ShouldBe(0);
         }

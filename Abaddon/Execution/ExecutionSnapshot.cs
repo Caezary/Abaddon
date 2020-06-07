@@ -43,35 +43,8 @@ namespace Abaddon.Execution
 
         private static void UpdatePointer(ExecutionStackPointer executionStackPointer)
         {
-            switch (executionStackPointer.Direction)
-            {
-                case StackChangeDirection.Increasing:
-                    Increase(executionStackPointer);
-                    break;
-                case StackChangeDirection.Decreasing:
-                    Decrease(executionStackPointer);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        private static void Increase(ExecutionStackPointer executionStackPointer)
-        {
             executionStackPointer.Value += executionStackPointer.Step;
-            ResetDirection(executionStackPointer);
-        }
-
-        private static void Decrease(ExecutionStackPointer executionStackPointer)
-        {
-            executionStackPointer.Value -= executionStackPointer.Step;
-            ResetDirection(executionStackPointer);
-        }
-
-        private static void ResetDirection(ExecutionStackPointer executionStackPointer)
-        {
-            executionStackPointer.Direction = StackChangeDirection.Increasing;
-            executionStackPointer.Step = 1;
+            executionStackPointer.ResetStep();
         }
     }
 }

@@ -28,15 +28,13 @@ namespace Abaddon.Instructions
                 return;
             }
 
+            state.ExecutionStackPointer.Step = -_instructionCount;
+            
             if (_instructionCount < 0)
             {
-                state.ExecutionStackPointer.Direction = StackChangeDirection.Increasing;
-                state.ExecutionStackPointer.Step = -_instructionCount;
                 return;
             }
-            
-            state.ExecutionStackPointer.Direction = StackChangeDirection.Decreasing;
-            state.ExecutionStackPointer.Step = _instructionCount;
+
             state.Accumulator = _entryOperator.Decrease(state.Accumulator);
         }
     }
