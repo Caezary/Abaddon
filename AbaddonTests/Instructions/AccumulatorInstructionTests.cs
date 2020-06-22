@@ -1,4 +1,5 @@
-﻿using Abaddon;
+﻿using System.Collections.Generic;
+using Abaddon;
 using Abaddon.Data;
 using Abaddon.Execution;
 using Moq;
@@ -11,7 +12,8 @@ namespace AbaddonTests.Instructions
     {
         private const string ExampleInitialStateValues = "0123456789ABCDEF";
         private readonly InstructionFactory<int> _factory = new InstructionFactory<int>(
-            new Mock<IPerformEntryOperations<int>>().Object);
+            new Mock<IPerformEntryOperations<int>>().Object,
+            new Mock<IComparer<int>>().Object);
 
         [Fact]
         public void CopyToAccumulatorInstruction_TakesValueUnderCurrentPosition_CopiesValueToAccumulator()

@@ -1,4 +1,5 @@
-﻿using Abaddon;
+﻿using System.Collections.Generic;
+using Abaddon;
 using Abaddon.Data;
 using Abaddon.Exceptions;
 using Abaddon.Execution;
@@ -12,7 +13,8 @@ namespace AbaddonTests.Instructions
     {
         private const string ExampleInitialStateValues = "3FC21A54B";
         private readonly InstructionFactory<int> _factory = new InstructionFactory<int>(
-            new Mock<IPerformEntryOperations<int>>().Object);
+            new Mock<IPerformEntryOperations<int>>().Object,
+            new Mock<IComparer<int>>().Object);
 
         [Theory]
         [InlineData(0, 0xF)]

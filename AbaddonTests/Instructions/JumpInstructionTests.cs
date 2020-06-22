@@ -1,4 +1,5 @@
-﻿using Abaddon;
+﻿using System.Collections.Generic;
+using Abaddon;
 using Abaddon.Data;
 using Abaddon.Exceptions;
 using Abaddon.Execution;
@@ -23,7 +24,7 @@ namespace AbaddonTests.Instructions
             _entryOperatorMock
                 .Setup(o => o.IsZero(It.IsAny<int>()))
                 .Returns<int>(e => e == 0);
-            _factory = new InstructionFactory<int>(_entryOperatorMock.Object);
+            _factory = new InstructionFactory<int>(_entryOperatorMock.Object, new Mock<IComparer<int>>().Object);
         }
 
         [Fact]

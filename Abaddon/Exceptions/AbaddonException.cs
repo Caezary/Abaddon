@@ -42,4 +42,6 @@ namespace Abaddon.Exceptions
     public class ExecutionLimitReachedError : InstructionExecutionException { }
     
     public class InvalidJumpError : InstructionExecutionException { }
+    
+    public class InvalidComparatorJumpError : InstructionExecutionException { }
 }

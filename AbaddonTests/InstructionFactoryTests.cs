@@ -1,4 +1,5 @@
-﻿using Abaddon;
+﻿using System.Collections.Generic;
+using Abaddon;
 using Abaddon.Exceptions;
 using Abaddon.Execution;
 using Abaddon.Instructions;
@@ -11,7 +12,8 @@ namespace AbaddonTests
     public class InstructionFactoryTests
     {
         private readonly InstructionFactory<int> _sut = new InstructionFactory<int>(
-            new Mock<IPerformEntryOperations<int>>().Object);
+            new Mock<IPerformEntryOperations<int>>().Object,
+            new Mock<IComparer<int>>().Object);
 
         [Fact]
         public void CreateInstructionCalled_UnknownMnemonic_Throws()
@@ -83,6 +85,24 @@ namespace AbaddonTests
         [InlineData("JZZZ")]
         [InlineData("J0xB")]
         public void CreateInstructionCalled_JumpMnemonicWithMalformedCounter_Throws(string mnemonic)
+        {
+            Assert.Throws<MalformedInstructionError>(() => _sut.CreateInstruction(mnemonic));
+        }
+
+        [Theory]
+        [InlineData("C5")]
+        [InlineData("C123")]
+        [InlineData("C-5")]
+        public void CreateInstructionCalled_ComparatorMnemonic_CreatesComparatorInstruction(string mnemonic)
+        {
+            VerifyInstructionCreationOfType<ComparatorInstruction<int>>(mnemonic);
+        }
+
+        [Theory]
+        [InlineData("C")]
+        [InlineData("CZZZ")]
+        [InlineData("C0xB")]
+        public void CreateInstructionCalled_ComparatorMnemonicWithMalformedCounter_Throws(string mnemonic)
         {
             Assert.Throws<MalformedInstructionError>(() => _sut.CreateInstruction(mnemonic));
         }
