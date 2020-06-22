@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Abaddon;
 using Abaddon.Exceptions;
 using Abaddon.Execution;
@@ -15,11 +17,15 @@ namespace AbaddonTests
             new Mock<IPerformEntryOperations<int>>().Object,
             new Mock<IComparer<int>>().Object);
 
-        [Fact]
-        public void CreateInstructionCalled_UnknownMnemonic_Throws()
+        [Theory]
+        [InlineData("ZZZ")]
+        [InlineData("D0")]
+        [InlineData("U5")]
+        [InlineData("S-3")]
+        public void CreateInstructionCalled_UnknownMnemonic_Throws(string mnemonic)
         {
             Assert.Throws<UnknownInstructionError>(
-                () => _sut.CreateInstruction("ZZZ"));
+                () => _sut.CreateInstruction(mnemonic));
         }
 
         [Fact]
@@ -105,6 +111,87 @@ namespace AbaddonTests
         public void CreateInstructionCalled_ComparatorMnemonicWithMalformedCounter_Throws(string mnemonic)
         {
             Assert.Throws<MalformedInstructionError>(() => _sut.CreateInstruction(mnemonic));
+        }
+
+        [Fact]
+        public void CreateInstructionStackCalled_EmptyInstructionSet_Throws()
+        {
+            var instructionSet = "";
+
+            Assert.Throws<InstructionsMissingError>(
+                () => _sut.CreateInstructionStack(instructionSet));
+        }
+
+        [Fact]
+        public void CreateInstructionStackCalled_InstructionSetWithOneMnemonic_CreatesStackWithOneInstruction()
+        {
+            var instructionSet = "Q";
+
+            var result = _sut.CreateInstructionStack(instructionSet);
+
+            result.ShouldHaveSingleItem()
+                .ShouldBeOfType<CopyFromAccumulatorInstruction<int>>();
+        }
+
+        [Fact]
+        public void CreateInstructionStackCalled_InstructionSetWithTwoMnemonics_CreatesStackWithTwoInstructions()
+        {
+            var instructionSet = "QS";
+
+            var result = _sut.CreateInstructionStack(instructionSet).ToArray();
+
+            result.Length.ShouldBe(2);
+            result[0].ShouldBeOfType<CopyFromAccumulatorInstruction<int>>();
+            result[1].ShouldBeOfType<SwapInstruction<int>>();
+        }
+
+        [Fact]
+        public void CreateInstructionStackCalled_InstructionSetWithThreeMnemonics_CreatesStackWithThreeInstructions()
+        {
+            var instructionSet = "QUS";
+
+            var result = _sut.CreateInstructionStack(instructionSet).ToArray();
+
+            result.Length.ShouldBe(3);
+            result[0].ShouldBeOfType<CopyFromAccumulatorInstruction<int>>();
+            result[1].ShouldBeOfType<MoveUpInstruction<int>>();
+            result[2].ShouldBeOfType<SwapInstruction<int>>();
+        }
+
+        [Theory]
+        [InlineData("J3", typeof(JumpInstruction<int>))]
+        [InlineData("C5", typeof(ComparatorInstruction<int>))]
+        public void CreateInstructionStackCalled_InstructionSetWithTwoCharMnemonic_CreatesStackWithOneInstruction(
+            string instructionSet, Type expectedType)
+        {
+            var result = _sut.CreateInstructionStack(instructionSet);
+
+            result.ShouldHaveSingleItem()
+                .ShouldBeOfType(expectedType);
+        }
+
+        [Theory]
+        [InlineData("J35", typeof(JumpInstruction<int>))]
+        [InlineData("J-6", typeof(JumpInstruction<int>))]
+        [InlineData("C54", typeof(ComparatorInstruction<int>))]
+        [InlineData("C-2", typeof(ComparatorInstruction<int>))]
+        public void CreateInstructionStackCalled_InstructionSetWithThreeCharMnemonic_CreatesStackWithOneInstruction(
+            string instructionSet, Type expectedType)
+        {
+            var result = _sut.CreateInstructionStack(instructionSet);
+
+            result.ShouldHaveSingleItem()
+                .ShouldBeOfType(expectedType);
+        }
+
+        [Fact]
+        public void CreateInstructionStackCalled_InstructionSetWithManyMnemonics_CreatesStackWithAllDefinedInstructions()
+        {
+            var instructionSet = "QUSJ2C5LULAC-12345J3J246J-999";
+
+            var result = _sut.CreateInstructionStack(instructionSet).ToArray();
+
+            result.Length.ShouldBe(13);
         }
 
         private void VerifyInstructionCreationOfType<TInstructionType>(string mnemonic)

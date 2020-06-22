@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Abaddon.Exceptions;
 using Abaddon.Execution;
 using Abaddon.Instructions;
@@ -33,6 +34,17 @@ namespace Abaddon
                 _ => throw new UnknownInstructionError()
             };
 
+        public IEnumerable<IInstruction<TEntry>> CreateInstructionStack(string instructionSet)
+        {
+            if (string.IsNullOrEmpty(instructionSet))
+            {
+                throw new InstructionsMissingError();
+            }
+
+            return ExtractMnemonics(instructionSet)
+                .Select(m => CreateInstruction($"{m}"));
+        }
+
         private IInstruction<TEntry> CreateJumpInstruction(string value)
         {
             var instructionCount = ExtractInstructionCount(value);
@@ -53,6 +65,29 @@ namespace Abaddon
             }
 
             return instructionCount;
+        }
+
+        private static IEnumerable<string> ExtractMnemonics(string instructionSet)
+        {
+            var mnemonics = new LinkedList<string>();
+
+            foreach (var m in instructionSet)
+            {
+                if (BeginsNewMnemonic(m))
+                {
+                    mnemonics.AddLast($"{m}");
+                    continue;
+                }
+
+                mnemonics.Last.Value += $"{m}";
+            }
+
+            return mnemonics;
+        }
+
+        private static bool BeginsNewMnemonic(char m)
+        {
+            return char.IsLetter(m) && char.IsUpper(m);
         }
     }
 }
