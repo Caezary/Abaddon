@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Abaddon.Data
 {
-    public class Board<TBoardEntry>     // TODO: maybe Board<TBoardRow> to make it more flexible?
+    public class Board<TBoardEntry>
     {
         private readonly List<BoardRow<TBoardEntry>> _rows;
 

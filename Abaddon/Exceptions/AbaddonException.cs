@@ -16,6 +16,8 @@ namespace Abaddon.Exceptions
     public class InstructionsMissingError : AbaddonException { }
     public class UnknownInstructionError : AbaddonException { }
     public class MalformedInstructionError : AbaddonException { }
+    
+    public class BoardSizesMismatchError : AbaddonException { }
 
     public class StateInitializationError : AbaddonException
     {

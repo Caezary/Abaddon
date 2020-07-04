@@ -29,14 +29,20 @@ namespace Abaddon
                 throw new StateInitializationError("Faulty start position");
             }
 
-            var rows = values.Select((c, index) => new { index, value = converter(c) })
+            var board = CreateBoard(width, values, converter);
+
+            return new CurrentState<TEntry>(board, startPosition, executionCounter);
+        }
+
+        public Board<TEntry> CreateBoard<TEntry>(int width, string values, Func<char, TEntry> converter)
+        {
+            var rows = values.Select((c, index) => new {index, value = converter(c)})
                 .GroupBy(x => x.index / width, x => x.value)
                 .Select(g => new BoardRow<TEntry>(g.ToList()))
                 .ToList();
 
             var board = new Board<TEntry>(rows);
-
-            return new CurrentState<TEntry>(board, startPosition, executionCounter);
+            return board;
         }
     }
 }
