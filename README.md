@@ -30,4 +30,6 @@ For a complete example, please see the [Simple Scenario](AbaddonTests/Scenarios/
 
 ## License
 
-**Include licensing info**
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+
+Licensed under the [MIT License](LICENSE)
